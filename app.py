@@ -52,5 +52,11 @@ def predict():
     return Response(response_data, content_type="application/json; charset=utf-8")
 
 # **📌 7️⃣ 运行 Flask 服务器**
+#if __name__ == "__main__":
+ #   app.run(debug=True, port=5001)  # ✅ 使用 5001 避免端口冲突
+
+import os
+
 if __name__ == "__main__":
-    app.run(debug=True, port=5001)  # ✅ 使用 5001 避免端口冲突
+    port = int(os.environ.get("PORT", 5000))  # 获取 Render 提供的 PORT 变量，默认为 5000
+    app.run(host="0.0.0.0", port=port)
