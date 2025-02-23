@@ -6,7 +6,6 @@ services:
     buildCommand: |
       pip install --upgrade pip
       pip install --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt
-
     startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
 
     envVars:
@@ -14,7 +13,8 @@ services:
         value: "3.11"
       - key: CUDA_VISIBLE_DEVICES
         value: "-1"
-      - key: PYTORCH_ENABLE_MPS_FALLBACK
-        value: "0"
       - key: HF_HOME
         value: /opt/render/.cache/huggingface
+
+
+

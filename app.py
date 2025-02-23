@@ -21,6 +21,7 @@ print("Downloading model from Hugging Face...")
 model_path = hf_hub_download(
     repo_id="LilithHu/bert-classifier",
     filename="bert_model.pt",
+    local_dir="./model",  # 下载到本地 model 文件夹，防止重复下载
     force_download=False  # 设置为 False，避免每次重新下载
 )
 
