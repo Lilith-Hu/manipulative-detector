@@ -9,6 +9,7 @@ from transformers import BertTokenizer, BertForSequenceClassification
 app = Flask(__name__)
 CORS(app)  # 添加这行
 
+
 # 设置设备
 device = torch.device("cpu")
 
