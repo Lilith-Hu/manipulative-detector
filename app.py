@@ -1,62 +1,82 @@
-from flask import Flask, request, jsonify, Response
-import joblib
-import json
-import re
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.preprocessing import LabelEncoder
-
-# **📌 1️⃣ 加载已训练的 SVM 模型 & TF-IDF 向量化器**
-svm_model = joblib.load("svm_model.pkl")
-tfidf_vectorizer = joblib.load("tfidf_vectorizer.pkl")
-label_encoder = joblib.load("label_encoder.pkl")
-
-# **📌 2️⃣ 初始化 Flask**
-app = Flask(__name__)
-
-# **📌 3️⃣ 文本预处理**
-def clean_text(text):
-    text = re.sub(r'\s+', ' ', text)  # 去除多余空格
-    return text.strip().lower()  # 统一小写 & 去除前后空格
-
-# **📌 4️⃣ 预测类别函数**
-def predict_category(text):
-    text = clean_text(text)  # 预处理文本
-    text_tfidf = tfidf_vectorizer.transform([text])  # 转换为 TF-IDF 向量
-    pred_label = svm_model.predict(text_tfidf)  # 预测类别
-    pred_category = label_encoder.inverse_transform(pred_label)  # 转换回原标签
-    return pred_category[0]
-
-# **📌 5️⃣ 首页 API**
-@app.route("/")
-def home():
-    return "🚀 Flask API 运行成功！使用 /predict 端点进行文本分类。"
-
-# **📌 6️⃣ 预测 API**
-@app.route("/predict", methods=["POST"])
-def predict():
-    data = request.get_json()  # 读取 JSON 请求
-
-    # **✅ 处理输入为空的情况**
-    if not data or "text" not in data:
-        return jsonify({"error": "请提供文本"}), 400
-
-    text = data["text"]
-    category = predict_category(text)
-
-    # **✅ 使用 `json.dumps()` 确保中文正常显示**
-    response_data = json.dumps(
-        {"text": text, "predicted_category": category}, ensure_ascii=False
-    )
-
-    # **✅ `Response()` 确保 UTF-8 编码**
-    return Response(response_data, content_type="application/json; charset=utf-8")
-
-# **📌 7️⃣ 运行 Flask 服务器**
-#if __name__ == "__main__":
- #   app.run(debug=True, port=5001)  # ✅ 使用 5001 避免端口冲突
-
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import torch
 import os
+import pickle
+import numpy as np
+from transformers import BertTokenizer, BertForSequenceClassification
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # 获取 Render 提供的 PORT 变量，默认为 5000
-    app.run(host="0.0.0.0", port=port)
+app = Flask(__name__)
+CORS(app)  # 添加这行
+
+# 设置设备
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# 加载模型和标签编码器
+model_dir = os.path.join(os.path.dirname(__file__), 'model')
+
+model = BertForSequenceClassification.from_pretrained('bert-base-multilingual-cased', num_labels=12)
+model.load_state_dict(torch.load(os.path.join(model_dir, 'bert_model.pt'), map_location=device))
+model.to(device)
+model.eval()
+
+with open(os.path.join(model_dir, 'label_encoder.pkl'), 'rb') as f:
+    label_encoders = pickle.load(f)
+
+# 加载 Tokenizer
+tokenizer = BertTokenizer.from_pretrained(model_dir)
+
+# 预测函数
+####
+
+#########
+def predict(text):
+    try:
+        # Tokenize input
+        inputs = tokenizer(text, truncation=True, padding='max_length', max_length=128, return_tensors='pt')
+        inputs = {key: val.to(device) for key, val in inputs.items()}
+
+        # Get prediction
+        with torch.no_grad():
+            outputs = model(**inputs)
+            logits = outputs.logits
+            predicted_class = torch.argmax(logits, dim=1)
+            # 转换为 numpy array
+            predicted_class = predicted_class.cpu().numpy()
+
+        # 转换预测结果为类别标签
+        category = label_encoders['category'].classes_[predicted_class[0]]
+        return category
+
+    except Exception as e:
+        print(f"Error in prediction: {str(e)}")
+        raise e
+#########
+
+# API 路由
+@app.route('/predict', methods=['POST'])
+def predict_route():
+    try:
+        data = request.get_json()
+        text = data.get('text', None)
+        if not text:
+            return jsonify({"error": "Text input is required"}), 400
+
+        category = predict(text)
+
+        response = {
+            "text": text,
+            "predicted_category": category
+        }
+
+        return jsonify(response)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# 启动服务
+
+
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 8000))
+    app.run(host='0.0.0.0', port=port)
