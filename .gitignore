@@ -17,3 +17,6 @@ model/model.safetensors
 .venv/
 
 
+*.dylib
+model/*.pt
+model/*.safetensors
