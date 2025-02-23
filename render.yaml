@@ -2,8 +2,17 @@ services:
   - type: web
     name: unwanted-message-api
     env: python
-    buildCommand: pip install -r requirements.txt
+    runtime: python
+    buildCommand: |
+      pip install --upgrade pip
+      pip install --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt
     startCommand: gunicorn app:app
     envVars:
       - key: PYTHON_VERSION
-        value: 3.9
+        value: 3.11
+      - key: CUDA_VISIBLE_DEVICES
+        value: "-1"
+      - key: PYTORCH_ENABLE_MPS_FALLBACK
+        value: "0"
+      - key: HF_HOME
+        value: /opt/render/.cache/huggingface

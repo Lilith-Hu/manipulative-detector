@@ -10,7 +10,7 @@ app = Flask(__name__)
 CORS(app)  # 添加这行
 
 # 设置设备
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cpu")
 
 # 加载模型和标签编码器
 model_dir = os.path.join(os.path.dirname(__file__), 'model')
