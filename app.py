@@ -16,8 +16,14 @@ device = torch.device("cpu")
 
 # ========================= 🟠 加载模型 =========================
 print("Downloading model from Hugging Face...")
+
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+
 model = AutoModelForSequenceClassification.from_pretrained("LilithHu/mbert-manipulative-detector")
 tokenizer = AutoTokenizer.from_pretrained("LilithHu/mbert-manipulative-detector")
+
+
+
 model.to(device)
 model.eval()
 print("Model and tokenizer loaded successfully!")

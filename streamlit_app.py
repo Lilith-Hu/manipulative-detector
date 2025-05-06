@@ -100,10 +100,10 @@ with st.sidebar:
 
     if lang == "English":
         st.markdown("### About")
-        st.write("This tool uses advanced BERT AI to analyze and classify potentially unwanted messages.")
+        st.write("This tool uses BERT AI to analyze and classify potentially unwanted messages.")
     else:
         st.markdown("### 关于")
-        st.write("此工具使用先进的BERT人工智能技术来分析和分类潜在的不良信息。")
+        st.write("此工具使用BERT人工智能技术来分析和分类潜在的不良信息。")
 
 # 主界面
 st.markdown('<h1 style="text-align: center;">🛡️ Unwanted Message Analyzer</h1>', unsafe_allow_html=True)
@@ -113,7 +113,7 @@ st.markdown('<p class="subtitle" style="text-align: center;">Powered by BERT Mod
 # 介绍文本
 if lang == "English":
     st.markdown("""
-    > This advanced tool helps identify and classify various types of unwanted messages, including:
+    > This tool helps identify and classify various types of unwanted messages, including:
     - Harassment
     - Threats
     - Emotional manipulation
@@ -123,7 +123,7 @@ if lang == "English":
     """)
 else:
     st.markdown("""
-    > 这个先进的工具可以帮助识别和分类各种类型的不良信息，包括：
+    > 这个工具可以帮助识别和分类各种类型的不良信息，包括：
     - 骚扰信息
     - 威胁信息
     - 情感操控
@@ -141,9 +141,12 @@ with col1:
     )
 
 # API 配置
-API_URL = "https://unwanted-message-analyzer-1-0.onrender.com/"
+API_URL = "http://localhost:10000/predict"
 
+#http://localhost:10000/predict
+#https://unwanted-message-api-2-0.onrender.com/predict
 #"https://unwanted-message-api-2-0.onrender.com/predict"
+#https://unwanted-message-analyzer-1-0.onrender.com/
 
 
 
