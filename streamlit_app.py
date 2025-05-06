@@ -141,7 +141,11 @@ with col1:
     )
 
 # API 配置
-API_URL = "https://unwanted-message-api-2-0.onrender.com/predict"
+API_URL = "https://unwanted-message-analyzer-1-0.onrender.com/"
+
+#"https://unwanted-message-api-2-0.onrender.com/predict"
+
+
 
 # 分析按钮
 if st.button("🔍 Analyze" if lang == "English" else "🔍 开始分析"):
