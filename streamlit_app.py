@@ -26,7 +26,7 @@ st.markdown("---")
 user_text = st.text_area("Enter your message / 输入文本", height=150)
 
 # 后端 API 地址
-API_URL = "https://manipulative-detector-api.onrender.com"
+API_URL = "https://manipulative-detector-api.onrender.com/predict"
 
 
 # 分析按钮

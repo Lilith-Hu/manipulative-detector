@@ -59,7 +59,7 @@ def predict_route():
 
         return jsonify({
             "text": text,
-            "prediction": label
+            "predicted_category": label
         })
 
     except Exception as e:

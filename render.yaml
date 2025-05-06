@@ -16,7 +16,7 @@ services:
       - key: HF_HOME
         value: /opt/render/.cache/huggingface
       - key: HF_TOKEN
-        value: "${HF_TOKEN}"  # ✅ 填入你的新 token
+        value: ${HF_TOKEN}
 
 
 
