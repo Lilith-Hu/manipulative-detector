@@ -29,6 +29,8 @@ user_text = st.text_area("Enter your message / 输入文本", height=150)
 API_URL = "https://manipulative-detector-api.onrender.com/predict"
 
 
+
+
 # 分析按钮
 if st.button("🔍 Analyze / 分析"):
     if not user_text.strip():
@@ -51,7 +53,7 @@ if st.button("🔍 Analyze / 分析"):
 # 页脚
 st.markdown("---")
 st.markdown(
-    "<p style='text-align: center; color: #888;'>© 2024 Manipulative Language Detector</p>",
+    "<p style='text-align: center; color: #888;'>© 2025 Manipulative Language Detector</p>",
     unsafe_allow_html=True
 )
 
